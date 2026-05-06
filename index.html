@@ -99,9 +99,14 @@
 </div>
 
 <script>
-// --- COLOQUE SEU BIN ID AQUI ---
-const BIN_ID = '69fbb9a2c0954111d8e8a557'; 
+const BIN_ID = '69fbb9a2c0954111d8e8a557'; // Deixe o seu ID novo aqui
 
+// ... lá na linha 108/109:
+if (BIN_ID === '69fbc25bc0954111d8e8d00f') {
+    status.innerText = '⚠️ Configure o BIN_ID no código'; // Volte para um aviso
+    renderAll();
+    return;
+}
 const defaultState = {
   teams: { A: ['Time A1','Time A2','Time A3'], B: ['Time B1','Time B2','Time B3'], C: ['Time C1','Time C2','Time C3'] },
   matches: [],
