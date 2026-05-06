@@ -8,7 +8,8 @@
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,sans-serif;background:#0d0f16;color:#d4d7e3;min-height:100vh}
     .app{max-width:780px;margin:0 auto;padding:1.5rem 1rem}
-    .app-title{font-size:19px;font-weight:600;color:#fff;margin-bottom:1.5rem;display:flex;align-items:center;gap:8px}
+    .app-title{font-size:19px;font-weight:600;color:#fff;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .title-left{display:flex;align-items:center;gap:8px}
     .ball-icon{width:26px;height:26px;background:#3dba7e;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
     .tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid #222535;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
     .tabs::-webkit-scrollbar{display:none}
@@ -50,6 +51,10 @@
     .ko-card-full{background:#13161f;border:1px solid #3dba7e44;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem}
     .ko-lbl{font-size:10px;font-weight:600;color:#3dba7e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem}
     .ko-lbl.third{color:#ba8a3d}
+    .status-cloud { font-size: 11px; padding: 5px 10px; border-radius: 6px; background: #1a1d2a; border: 1px solid #2a2e42 }
+    .syncing { color: #ba8a3d; border-color: #ba8a3d }
+    .synced { color: #3dba7e; border-color: #3dba7e }
+    .admin-bar { background: #13161f; padding: 12px; border-radius: 12px; margin-bottom: 1.5rem; display: flex; gap: 10px; align-items: center; border: 1px solid #2a2e42; flex-wrap: wrap }
     @media(max-width:520px){
       .ko-grid{grid-template-columns:1fr}
       .match-row{gap:3px}
@@ -59,7 +64,16 @@
 </head>
 <body>
 <div class="app">
-  <div class="app-title"><span class="ball-icon">⚽</span> Campeonato Society</div>
+  <div class="app-title">
+    <div class="title-left"><span class="ball-icon">⚽</span> Campeonato Society</div>
+    <span id="cloud-status" class="status-cloud">Carregando dados...</span>
+  </div>
+
+  <div class="admin-bar">
+    <span style="font-size:12px;color:#8890b0;font-weight:600">ÁREA DO ADMIN:</span>
+    <input type="password" id="api-key-input" class="inp" style="max-width: 220px" placeholder="Sua Master Key (JSONBin)">
+    <button class="btn btn-primary" onclick="saveToCloud()">Salvar na Nuvem</button>
+  </div>
 
   <div class="tabs">
     <button class="tab active" onclick="showTab('grupos')">Grupos</button>
@@ -85,6 +99,9 @@
 </div>
 
 <script>
+// --- COLOQUE SEU BIN ID AQUI ---
+const BIN_ID = '69fbb9a2c0954111d8e8a557'; 
+
 const defaultState = {
   teams: { A: ['Time A1','Time A2','Time A3'], B: ['Time B1','Time B2','Time B3'], C: ['Time C1','Time C2','Time C3'] },
   matches: [],
@@ -99,19 +116,73 @@ const defaultState = {
 
 let state = JSON.parse(JSON.stringify(defaultState));
 
-function loadData() {
-  const s = localStorage.getItem('torneio_soc_v3');
-  if (s) state = JSON.parse(s);
+// --- INTEGRAÇÃO COM A NUVEM ---
+async function loadFromCloud() {
+  const status = document.getElementById('cloud-status');
+  status.innerText = 'Sincronizando...';
+  status.className = 'status-cloud syncing';
+  
+  if (BIN_ID === 'SEU_BIN_ID_AQUI') {
+      status.innerText = '⚠️ BIN_ID não configurado';
+      renderAll();
+      return;
+  }
+
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
+    const data = await res.json();
+    if (data.record) {
+      state = data.record;
+    }
+    renderAll();
+    status.innerText = 'Nuvem Atualizada ✔️';
+    status.className = 'status-cloud synced';
+  } catch (e) {
+    status.innerText = 'Erro ao carregar da nuvem';
+    console.error(e);
+  }
 }
 
-function saveData() {
-  localStorage.setItem('torneio_soc_v3', JSON.stringify(state));
+async function saveToCloud() {
+  const apiKey = document.getElementById('api-key-input').value;
+  if (!apiKey) {
+    alert("Para salvar, você precisa digitar sua Master Key no campo acima.");
+    return;
+  }
+
+  const status = document.getElementById('cloud-status');
+  status.innerText = 'Salvando...';
+  status.className = 'status-cloud syncing';
+  
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': apiKey
+      },
+      body: JSON.stringify(state)
+    });
+    
+    if (res.ok) {
+      status.innerText = 'Salvo com Sucesso! ✔️';
+      status.className = 'status-cloud synced';
+      alert("Dados salvos na nuvem com sucesso!");
+    } else {
+      throw new Error('Chave incorreta ou erro no servidor');
+    }
+  } catch (e) {
+    status.innerText = 'Erro ao salvar ❌';
+    status.className = 'status-cloud';
+    alert("Erro ao salvar! Verifique se a sua Master Key está correta.");
+  }
 }
 
+// --- LÓGICA DO TORNEIO ---
 function resetData() {
-  if (confirm('Zerar todos os dados?')) {
+  if (confirm('Zerar todos os dados localmente? Lembre de salvar na nuvem depois.')) {
     state = JSON.parse(JSON.stringify(defaultState));
-    saveData(); renderAll();
+    renderAll();
   }
 }
 
@@ -126,13 +197,15 @@ function renderGroupSetup() {
     </div>`).join('');
 }
 
-function updateTeamName(g, i, v) { state.teams[g][i] = v; saveData(); }
+function updateTeamName(g, i, v) { 
+    state.teams[g][i] = v; 
+}
 
 function randomizeAll() {
   const names = ['Real Madrid','Barcelona','Man City','Bayern','PSG','Liverpool','Inter','Milan','Arsenal'];
   names.sort(() => Math.random() - .5);
   ['A','B','C'].forEach((g, i) => state.teams[g] = [names[i*3], names[i*3+1], names[i*3+2]]);
-  saveData(); renderGroupSetup();
+  renderGroupSetup();
 }
 
 function saveGroups() {
@@ -149,7 +222,7 @@ function saveGroups() {
       state.matches.push({ id: id++, date: d, group: 'Suíço', home: 'A definir', away: 'A definir', scoreH: '', scoreA: '', time: 'Data/Hora' });
     }
   }
-  saveData(); showTab('jogos');
+  showTab('jogos');
 }
 
 function renderMatches() {
@@ -181,7 +254,10 @@ function renderMatches() {
 
 function updateMatchInfo(id, field, val) {
   const m = state.matches.find(x => x.id === id);
-  if (m) { m[field] = val; saveData(); if (field !== 'time') renderStandings(); }
+  if (m) { 
+      m[field] = val; 
+      if (field !== 'time') renderStandings(); 
+  }
 }
 
 function getStandings() {
@@ -225,7 +301,6 @@ function autoFillKnockout() {
   state.knockout.sf1.away = bs;
   state.knockout.sf2.home = f2;
   state.knockout.sf2.away = f3;
-  saveData();
 }
 
 function renderStandings() {
@@ -261,14 +336,14 @@ function renderMata() {
       <div class="ko-lbl ${labelClass || ''}">${labelText}</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
         <span style="font-size:11px;color:#5a6080">Data/Hora</span>
-        <input class="inp time-inp" value="${m.time || 'Data/Hora'}" onchange="state.knockout['${key}'].time=this.value;saveData()">
+        <input class="inp time-inp" value="${m.time || 'Data/Hora'}" onchange="state.knockout['${key}'].time=this.value">
       </div>
       <div class="match-row">
-        <input class="inp team-inp" value="${m.home}" onchange="state.knockout['${key}'].home=this.value;saveData()">
-        <input type="number" class="inp score" value="${m.scoreH}" onchange="state.knockout['${key}'].scoreH=this.value;saveData()">
+        <input class="inp team-inp" value="${m.home}" onchange="state.knockout['${key}'].home=this.value">
+        <input type="number" class="inp score" value="${m.scoreH}" onchange="state.knockout['${key}'].scoreH=this.value">
         <span class="vs">×</span>
-        <input type="number" class="inp score" value="${m.scoreA}" onchange="state.knockout['${key}'].scoreA=this.value;saveData()">
-        <input class="inp team-inp right" value="${m.away}" onchange="state.knockout['${key}'].away=this.value;saveData()">
+        <input type="number" class="inp score" value="${m.scoreA}" onchange="state.knockout['${key}'].scoreA=this.value">
+        <input class="inp team-inp right" value="${m.away}" onchange="state.knockout['${key}'].away=this.value">
       </div>
     </div>`;
   }
@@ -279,14 +354,14 @@ function renderMata() {
       <div class="ko-lbl ${labelClass || ''}">${labelText}</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem">
         <span style="font-size:11px;color:#5a6080">Data/Hora</span>
-        <input class="inp time-inp" value="${m.time || 'Data/Hora'}" onchange="state.knockout['${key}'].time=this.value;saveData()">
+        <input class="inp time-inp" value="${m.time || 'Data/Hora'}" onchange="state.knockout['${key}'].time=this.value">
       </div>
       <div class="match-row">
-        <input class="inp team-inp" value="${m.home}" onchange="state.knockout['${key}'].home=this.value;saveData()">
-        <input type="number" class="inp score" value="${m.scoreH}" onchange="state.knockout['${key}'].scoreH=this.value;saveData()">
+        <input class="inp team-inp" value="${m.home}" onchange="state.knockout['${key}'].home=this.value">
+        <input type="number" class="inp score" value="${m.scoreH}" onchange="state.knockout['${key}'].scoreH=this.value">
         <span class="vs">×</span>
-        <input type="number" class="inp score" value="${m.scoreA}" onchange="state.knockout['${key}'].scoreA=this.value;saveData()">
-        <input class="inp team-inp right" value="${m.away}" onchange="state.knockout['${key}'].away=this.value;saveData()">
+        <input type="number" class="inp score" value="${m.scoreA}" onchange="state.knockout['${key}'].scoreA=this.value">
+        <input class="inp team-inp right" value="${m.away}" onchange="state.knockout['${key}'].away=this.value">
       </div>
     </div>`;
   }
@@ -319,16 +394,15 @@ function renderArtilharia() {
       <input class="inp" value="${s.name}" onchange="updateScorer(${i},'name',this.value)" placeholder="Jogador">
       <input class="inp" value="${s.team}" onchange="updateScorer(${i},'team',this.value)" placeholder="Time">
       <input type="number" class="inp score" value="${s.goals}" onchange="updateScorer(${i},'goals',this.value)">
-      <button class="del-btn" onclick="state.scorers.splice(${i},1);saveData();renderArtilharia()">✕</button>
+      <button class="del-btn" onclick="state.scorers.splice(${i},1);renderArtilharia()">✕</button>
     </div>`;
   });
-  html += `<button class="btn" style="margin-top:4px" onclick="state.scorers.push({name:'',team:'',goals:0});saveData();renderArtilharia()">+ Adicionar jogador</button></div>`;
+  html += `<button class="btn" style="margin-top:4px" onclick="state.scorers.push({name:'',team:'',goals:0});renderArtilharia()">+ Adicionar jogador</button></div>`;
   document.getElementById('artilharia-container').innerHTML = html;
 }
 
 function updateScorer(i, f, v) {
   state.scorers[i][f] = f === 'goals' ? parseInt(v) || 0 : v;
-  saveData();
 }
 
 function showTab(t) {
@@ -343,7 +417,8 @@ function renderAll() {
   renderGroupSetup(); renderMatches(); renderStandings(); renderMata(); renderArtilharia();
 }
 
-loadData(); renderAll();
+// Inicia puxando da nuvem
+loadFromCloud();
 </script>
 </body>
 </html>
