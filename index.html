@@ -4,75 +4,401 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Campeonato Society</title>
+
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:system-ui,sans-serif;background:#0d0f16;color:#d4d7e3;min-height:100vh}
-    .app{max-width:780px;margin:0 auto;padding:1.5rem 1rem}
-    .app-title{font-size:19px;font-weight:600;color:#fff;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-    .title-left{display:flex;align-items:center;gap:8px}
-    .ball-icon{width:26px;height:26px;background:#3dba7e;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
-    .tabs{display:flex;gap:0;margin-bottom:1.5rem;border-bottom:1px solid #222535;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
-    .tabs::-webkit-scrollbar{display:none}
-    .tab{padding:9px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:#5a6080;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s}
-    .tab.active{color:#3dba7e;border-bottom-color:#3dba7e;font-weight:500}
-    .section{display:none}
-    .section.active{display:block}
-    .card{background:#13161f;border:1px solid #222535;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
-    .group-lbl{font-size:11px;font-weight:600;letter-spacing:.07em;color:#3dba7e;margin-bottom:.75rem;text-transform:uppercase}
-    .inp{padding:7px 10px;font-size:13px;border:1px solid #2a2e42;border-radius:8px;background:#0d0f16;color:#d4d7e3;outline:none;width:100%}
-    .inp:focus{border-color:#3dba7e}
-    .inp.score{width:44px;text-align:center;font-size:16px;font-weight:600;padding:6px 2px}
-    .inp.time-inp{width:110px;font-size:11px;text-align:center;background:#1a1d2a;border-color:#2a2e42;color:#8890b0}
-    .inp.team-inp{flex:1;min-width:0;font-size:13px;font-weight:500}
-    .inp.team-inp.right{text-align:right}
-    .btn{padding:8px 16px;font-size:13px;border:1px solid #2a2e42;border-radius:8px;cursor:pointer;background:#1a1d2a;color:#d4d7e3;transition:background .15s}
-    .btn:hover{background:#222535}
-    .btn-primary{background:#3dba7e;color:#04342c;border-color:#3dba7e;font-weight:500}
-    .btn-primary:hover{background:#45cc8a}
-    .btn-danger{color:#f09595;border-color:#3d1f1f}
-    .match-card{background:#13161f;border:1px solid #222535;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.6rem}
-    .match-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
-    .match-lbl{font-size:10px;font-weight:600;color:#8890b0;text-transform:uppercase;letter-spacing:.05em}
-    .match-row{display:grid;grid-template-columns:1fr auto auto auto 1fr;align-items:center;gap:6px}
-    .vs{font-size:12px;color:#3a3f55;font-weight:600}
-    .date-sec{margin-bottom:1.5rem}
-    .date-badge{font-size:11px;padding:3px 10px;border-radius:999px;font-weight:600;background:#0c2b1e;color:#3dba7e;margin-right:8px}
-    .date-hdr{margin-bottom:.75rem}
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    th{text-align:left;padding:8px;color:#5a6080;font-size:10px;text-transform:uppercase;border-bottom:1px solid #1e2130}
-    td{padding:9px 8px;border-bottom:1px solid #1a1d2a;color:#d4d7e3}
-    .scorer-row{display:grid;grid-template-columns:2fr 2fr 54px auto;gap:8px;margin-bottom:8px;align-items:center}
-    .del-btn{background:#2a1515;color:#f09595;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:13px}
-    .ko-date-block{margin-bottom:1.5rem}
-    .ko-date-hdr{display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap}
-    .ko-badge{font-size:11px;padding:3px 12px;border-radius:999px;font-weight:600;background:#0c2b1e;color:#3dba7e}
-    .ko-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-    .ko-card{background:#13161f;border:1px solid #222535;border-radius:12px;padding:1rem 1.25rem}
-    .ko-card-full{background:#13161f;border:1px solid #3dba7e44;border-radius:12px;padding:1rem 1.25rem;margin-bottom:.75rem}
-    .ko-lbl{font-size:10px;font-weight:600;color:#3dba7e;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.75rem}
-    .ko-lbl.third{color:#ba8a3d}
-    .status-cloud { font-size: 11px; padding: 5px 10px; border-radius: 6px; background: #1a1d2a; border: 1px solid #2a2e42 }
-    .syncing { color: #ba8a3d; border-color: #ba8a3d }
-    .synced { color: #3dba7e; border-color: #3dba7e }
-    .admin-bar { background: #13161f; padding: 12px; border-radius: 12px; margin-bottom: 1.5rem; display: flex; gap: 10px; align-items: center; border: 1px solid #2a2e42; flex-wrap: wrap }
+
+    body{
+      font-family:system-ui,sans-serif;
+      background:#0d0f16;
+      color:#d4d7e3;
+      min-height:100vh
+    }
+
+    .app{
+      max-width:780px;
+      margin:0 auto;
+      padding:1.5rem 1rem
+    }
+
+    .app-title{
+      font-size:19px;
+      font-weight:600;
+      color:#fff;
+      margin-bottom:1.5rem;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:10px
+    }
+
+    .title-left{
+      display:flex;
+      align-items:center;
+      gap:8px
+    }
+
+    .ball-icon{
+      width:26px;
+      height:26px;
+      background:#3dba7e;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px
+    }
+
+    .tabs{
+      display:flex;
+      gap:0;
+      margin-bottom:1.5rem;
+      border-bottom:1px solid #222535;
+      overflow-x:auto;
+      white-space:nowrap;
+      scrollbar-width:none
+    }
+
+    .tabs::-webkit-scrollbar{
+      display:none
+    }
+
+    .tab{
+      padding:9px 16px;
+      font-size:13px;
+      cursor:pointer;
+      border:none;
+      background:none;
+      color:#5a6080;
+      border-bottom:2px solid transparent;
+      margin-bottom:-1px;
+      transition:color .15s
+    }
+
+    .tab.active{
+      color:#3dba7e;
+      border-bottom-color:#3dba7e;
+      font-weight:500
+    }
+
+    .section{
+      display:none
+    }
+
+    .section.active{
+      display:block
+    }
+
+    .card{
+      background:#13161f;
+      border:1px solid #222535;
+      border-radius:12px;
+      padding:1rem 1.25rem;
+      margin-bottom:1rem
+    }
+
+    .group-lbl{
+      font-size:11px;
+      font-weight:600;
+      letter-spacing:.07em;
+      color:#3dba7e;
+      margin-bottom:.75rem;
+      text-transform:uppercase
+    }
+
+    .inp{
+      padding:7px 10px;
+      font-size:13px;
+      border:1px solid #2a2e42;
+      border-radius:8px;
+      background:#0d0f16;
+      color:#d4d7e3;
+      outline:none;
+      width:100%
+    }
+
+    .inp:focus{
+      border-color:#3dba7e
+    }
+
+    .inp.score{
+      width:44px;
+      text-align:center;
+      font-size:16px;
+      font-weight:600;
+      padding:6px 2px
+    }
+
+    .inp.time-inp{
+      width:110px;
+      font-size:11px;
+      text-align:center;
+      background:#1a1d2a;
+      border-color:#2a2e42;
+      color:#8890b0
+    }
+
+    .inp.team-inp{
+      flex:1;
+      min-width:0;
+      font-size:13px;
+      font-weight:500
+    }
+
+    .inp.team-inp.right{
+      text-align:right
+    }
+
+    .btn{
+      padding:8px 16px;
+      font-size:13px;
+      border:1px solid #2a2e42;
+      border-radius:8px;
+      cursor:pointer;
+      background:#1a1d2a;
+      color:#d4d7e3;
+      transition:background .15s
+    }
+
+    .btn:hover{
+      background:#222535
+    }
+
+    .btn-primary{
+      background:#3dba7e;
+      color:#04342c;
+      border-color:#3dba7e;
+      font-weight:500
+    }
+
+    .btn-primary:hover{
+      background:#45cc8a
+    }
+
+    .btn-danger{
+      color:#f09595;
+      border-color:#3d1f1f
+    }
+
+    .match-card{
+      background:#13161f;
+      border:1px solid #222535;
+      border-radius:12px;
+      padding:.9rem 1.1rem;
+      margin-bottom:.6rem
+    }
+
+    .match-hdr{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:.75rem
+    }
+
+    .match-lbl{
+      font-size:10px;
+      font-weight:600;
+      color:#8890b0;
+      text-transform:uppercase;
+      letter-spacing:.05em
+    }
+
+    .match-row{
+      display:grid;
+      grid-template-columns:1fr auto auto auto 1fr;
+      align-items:center;
+      gap:6px
+    }
+
+    .vs{
+      font-size:12px;
+      color:#3a3f55;
+      font-weight:600
+    }
+
+    .date-sec{
+      margin-bottom:1.5rem
+    }
+
+    .date-badge{
+      font-size:11px;
+      padding:3px 10px;
+      border-radius:999px;
+      font-weight:600;
+      background:#0c2b1e;
+      color:#3dba7e;
+      margin-right:8px
+    }
+
+    .date-hdr{
+      margin-bottom:.75rem
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px
+    }
+
+    th{
+      text-align:left;
+      padding:8px;
+      color:#5a6080;
+      font-size:10px;
+      text-transform:uppercase;
+      border-bottom:1px solid #1e2130
+    }
+
+    td{
+      padding:9px 8px;
+      border-bottom:1px solid #1a1d2a;
+      color:#d4d7e3
+    }
+
+    .scorer-row{
+      display:grid;
+      grid-template-columns:2fr 2fr 54px auto;
+      gap:8px;
+      margin-bottom:8px;
+      align-items:center
+    }
+
+    .del-btn{
+      background:#2a1515;
+      color:#f09595;
+      border:none;
+      padding:6px 10px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:13px
+    }
+
+    .ko-date-block{
+      margin-bottom:1.5rem
+    }
+
+    .ko-date-hdr{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:1rem;
+      flex-wrap:wrap
+    }
+
+    .ko-badge{
+      font-size:11px;
+      padding:3px 12px;
+      border-radius:999px;
+      font-weight:600;
+      background:#0c2b1e;
+      color:#3dba7e
+    }
+
+    .ko-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:.75rem
+    }
+
+    .ko-card-full{
+      background:#13161f;
+      border:1px solid #3dba7e44;
+      border-radius:12px;
+      padding:1rem 1.25rem;
+      margin-bottom:.75rem
+    }
+
+    .ko-lbl{
+      font-size:10px;
+      font-weight:600;
+      color:#3dba7e;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+      margin-bottom:.75rem
+    }
+
+    .ko-lbl.third{
+      color:#ba8a3d
+    }
+
+    .status-cloud{
+      font-size:11px;
+      padding:5px 10px;
+      border-radius:6px;
+      background:#1a1d2a;
+      border:1px solid #2a2e42
+    }
+
+    .syncing{
+      color:#ba8a3d;
+      border-color:#ba8a3d
+    }
+
+    .synced{
+      color:#3dba7e;
+      border-color:#3dba7e
+    }
+
+    .admin-bar{
+      background:#13161f;
+      padding:12px;
+      border-radius:12px;
+      margin-bottom:1.5rem;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      border:1px solid #2a2e42;
+      flex-wrap:wrap
+    }
+
     @media(max-width:520px){
-      .ko-grid{grid-template-columns:1fr}
-      .match-row{gap:3px}
-      .inp.team-inp{font-size:12px;padding:6px 4px}
+      .ko-grid{
+        grid-template-columns:1fr
+      }
+
+      .match-row{
+        gap:3px
+      }
+
+      .inp.team-inp{
+        font-size:12px;
+        padding:6px 4px
+      }
     }
   </style>
 </head>
+
 <body>
+
 <div class="app">
+
   <div class="app-title">
-    <div class="title-left"><span class="ball-icon">⚽</span> Campeonato Society</div>
-    <span id="cloud-status" class="status-cloud">Carregando dados...</span>
+    <div class="title-left">
+      <span class="ball-icon">⚽</span>
+      Campeonato Society
+    </div>
+
+    <span id="cloud-status" class="status-cloud">
+      Carregando dados...
+    </span>
   </div>
 
   <div class="admin-bar">
-    <span style="font-size:12px;color:#8890b0;font-weight:600">ÁREA DO ADMIN:</span>
-    <input type="password" id="api-key-input" class="inp" style="max-width: 220px" placeholder="Sua Master Key (JSONBin)">
-    <button class="btn btn-primary" onclick="saveToCloud()">Salvar na Nuvem</button>
+    <span style="font-size:12px;color:#8890b0;font-weight:600">
+      ÁREA DO ADMIN:
+    </span>
+
+    <input
+      type="password"
+      id="api-key-input"
+      class="inp"
+      style="max-width:220px"
+      placeholder="Sua Master Key (JSONBin)">
+
+    <button class="btn btn-primary" onclick="saveToCloud()">
+      Salvar na Nuvem
+    </button>
   </div>
 
   <div class="tabs">
@@ -85,272 +411,745 @@
 
   <div id="tab-grupos" class="section active">
     <div id="groups-setup"></div>
+
     <div style="display:flex;gap:8px;margin-top:1rem;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="saveGroups()">Gerar Tabela de Jogos</button>
-      <button class="btn" onclick="randomizeAll()">Sortear Times</button>
-      <button class="btn btn-danger" onclick="resetData()">Limpar Tudo</button>
+      <button class="btn btn-primary" onclick="saveGroups()">
+        Gerar Tabela de Jogos
+      </button>
+
+      <button class="btn" onclick="randomizeAll()">
+        Sortear Times
+      </button>
+
+      <button class="btn btn-danger" onclick="resetData()">
+        Limpar Tudo
+      </button>
     </div>
   </div>
 
-  <div id="tab-jogos" class="section"><div id="matches-container"></div></div>
-  <div id="tab-classificacao" class="section"><div id="standings-container"></div></div>
-  <div id="tab-mata" class="section"><div id="mata-container"></div></div>
-  <div id="tab-artilharia" class="section"><div id="artilharia-container"></div></div>
+  <div id="tab-jogos" class="section">
+    <div id="matches-container"></div>
+  </div>
+
+  <div id="tab-classificacao" class="section">
+    <div id="standings-container"></div>
+  </div>
+
+  <div id="tab-mata" class="section">
+    <div id="mata-container"></div>
+  </div>
+
+  <div id="tab-artilharia" class="section">
+    <div id="artilharia-container"></div>
+  </div>
+
 </div>
 
 <script>
-// --- CONFIGURAÇÃO ---
-const BIN_ID = '69fbc25bc0954111d8e8d00f'; 
+
+const BIN_ID = '69fbc25bc0954111d8e8d00f';
 
 const defaultState = {
-  teams: { A: ['Time A1','Time A2','Time A3'], B: ['Time B1','Time B2','Time B3'], C: ['Time C1','Time C2','Time C3'] },
-  matches: [],
-  knockout: {
-    sf1:   { home: '', away: '', scoreH: '', scoreA: '', time: 'Data/Hora' },
-    sf2:   { home: '', away: '', scoreH: '', scoreA: '', time: 'Data/Hora' },
-    third: { home: '', away: '', scoreH: '', scoreA: '', time: 'Data/Hora' },
-    final: { home: '', away: '', scoreH: '', scoreA: '', time: 'Data/Hora' }
+  teams: {
+    A: ['Time A1','Time A2','Time A3'],
+    B: ['Time B1','Time B2','Time B3'],
+    C: ['Time C1','Time C2','Time C3']
   },
-  scorers: []
+
+  matches: [],
+
+  knockout: {
+    sf1:   { home:'', away:'', scoreH:'', scoreA:'', time:'Data/Hora' },
+    sf2:   { home:'', away:'', scoreH:'', scoreA:'', time:'Data/Hora' },
+    third: { home:'', away:'', scoreH:'', scoreA:'', time:'Data/Hora' },
+    final: { home:'', away:'', scoreH:'', scoreA:'', time:'Data/Hora' }
+  },
+
+  scorers:[]
 };
 
 let state = JSON.parse(JSON.stringify(defaultState));
 
-// --- INTEGRAÇÃO COM A NUVEM ---
 async function loadFromCloud() {
+
   const status = document.getElementById('cloud-status');
+
   status.innerText = 'Sincronizando...';
   status.className = 'status-cloud syncing';
-  
+
   try {
+
     const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
-    if (!res.ok) throw new Error('Não foi possível carregar');
+
+    if(!res.ok) throw new Error();
+
     const data = await res.json();
-    if (data.record) {
+
+    if(data.record){
       state = data.record;
     }
+
     status.innerText = 'Nuvem Atualizada ✔️';
     status.className = 'status-cloud synced';
-  } catch (e) {
+
+  } catch(e){
+
     status.innerText = 'Modo Offline ⚠️';
     status.className = 'status-cloud';
-    console.error(e);
+
   } finally {
+
     renderAll();
+
   }
 }
 
-async function saveToCloud() {
+async function saveToCloud(){
+
   const apiKey = document.getElementById('api-key-input').value;
-  if (!apiKey) {
-    alert("Para salvar, você precisa digitar sua Master Key no campo acima.");
+
+  if(!apiKey){
+    alert("Digite sua Master Key.");
     return;
   }
 
-  const status = document.getElementById('cloud-status');
-  status.innerText = 'Salvando...';
-  status.className = 'status-cloud syncing';
-  
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': apiKey
+  try{
+
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`,{
+      method:'PUT',
+      headers:{
+        'Content-Type':'application/json',
+        'X-Master-Key':apiKey
       },
-      body: JSON.stringify(state)
+      body:JSON.stringify(state)
     });
-    
-    if (res.ok) {
-      status.innerText = 'Salvo com Sucesso! ✔️';
-      status.className = 'status-cloud synced';
-      alert("Dados salvos na nuvem com sucesso!");
-    } else {
-      throw new Error('Chave incorreta');
-    }
-  } catch (e) {
-    status.innerText = 'Erro ao salvar ❌';
-    alert("Erro ao salvar! Verifique a Master Key.");
+
+    alert('Salvo na nuvem com sucesso!');
+
+  }catch(e){
+
+    alert('Erro ao salvar.');
+
   }
 }
 
-// --- LÓGICA DO TORNEIO ---
-function resetData() {
-  if (confirm('Zerar todos os dados?')) {
+function resetData(){
+
+  if(confirm('Zerar tudo?')){
+
     state = JSON.parse(JSON.stringify(defaultState));
     renderAll();
+
   }
 }
 
-function renderGroupSetup() {
-  document.getElementById('groups-setup').innerHTML = ['A','B','C'].map(g => `
+function renderGroupSetup(){
+
+  document.getElementById('groups-setup').innerHTML =
+  ['A','B','C'].map(g => `
+
     <div class="card">
-      <div class="group-lbl">Grupo ${g}</div>
-      ${state.teams[g].map((t, i) => `
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <input class="inp" value="${t}" onchange="state.teams['${g}'][${i}] = this.value"/>
-        </div>`).join('')}
-    </div>`).join('');
+
+      <div class="group-lbl">
+        Grupo ${g}
+      </div>
+
+      ${state.teams[g].map((t,i)=>`
+
+        <div style="margin-bottom:8px">
+
+          <input
+            class="inp"
+            value="${t}"
+            onchange="state.teams['${g}'][${i}] = this.value">
+
+        </div>
+
+      `).join('')}
+
+    </div>
+
+  `).join('');
 }
 
-function randomizeAll() {
-  const names = ['Time 1','Time 2','Time 3','Time 4','Time 5','Time 6','Time 7','Time 8','Time 9'];
-  names.sort(() => Math.random() - .5);
-  ['A','B','C'].forEach((g, i) => state.teams[g] = [names[i*3], names[i*3+1], names[i*3+2]]);
+function randomizeAll(){
+
+  const names = [
+    'Time 1',
+    'Time 2',
+    'Time 3',
+    'Time 4',
+    'Time 5',
+    'Time 6',
+    'Time 7',
+    'Time 8',
+    'Time 9'
+  ];
+
+  names.sort(()=>Math.random()-0.5);
+
+  ['A','B','C'].forEach((g,i)=>{
+
+    state.teams[g] = [
+      names[i*3],
+      names[i*3+1],
+      names[i*3+2]
+    ];
+
+  });
+
   renderGroupSetup();
 }
 
-function saveGroups() {
-  state.matches = []; let id = 0;
+function saveGroups(){
+
+  state.matches = [];
+
+  let id = 0;
+
   const conf = [[0,1],[0,2],[1,2]];
-  for (let d = 1; d <= 3; d++) {
-    ['A','B','C'].forEach(g => {
-      const [ih, ia] = conf[d-1];
-      state.matches.push({ id: id++, date: d, group: g, home: state.teams[g][ih], away: state.teams[g][ia], scoreH: '', scoreA: '', time: 'Data/Hora' });
+
+  // Fase de grupos
+  for(let d=1; d<=3; d++){
+
+    ['A','B','C'].forEach(g=>{
+
+      const [ih,ia] = conf[d-1];
+
+      state.matches.push({
+        id:id++,
+        date:d,
+        phase:'groups',
+        group:g,
+        home:state.teams[g][ih],
+        away:state.teams[g][ia],
+        scoreH:'',
+        scoreA:'',
+        time:'Data/Hora'
+      });
+
     });
+
   }
+
+  // Fase suíça
+   // Fase suíça
+  // 3 jogos por data -> datas 4,5,6
+  for(let d=4; d<=6; d++){
+
+    for(let i=0; i<3; i++){
+
+      state.matches.push({
+        id:id++,
+        date:d,
+        phase:'swiss',
+        group:'Suíça',
+        home:'',
+        away:'',
+        scoreH:'',
+        scoreA:'',
+        time:'Data/Hora'
+      });
+
+    }
+
+  }
+
   showTab('jogos');
 }
 
-function renderMatches() {
+function renderMatches(){
+
   const container = document.getElementById('matches-container');
+
   const byDate = {};
-  state.matches.forEach(m => { if (!byDate[m.date]) byDate[m.date] = []; byDate[m.date].push(m); });
-  let html = '';
-  Object.keys(byDate).forEach(d => {
-    html += `<div class="date-sec"><div class="date-hdr"><span class="date-badge">DATA ${d}</span></div>`;
-    byDate[d].forEach(m => {
-      html += `<div class="match-card">
-        <div class="match-hdr">
-          <span class="match-lbl">Grupo ${m.group}</span>
-          <input class="inp time-inp" value="${m.time}" onchange="updateMatchInfo(${m.id},'time',this.value)" placeholder="dd/mm hh:mm">
-        </div>
-        <div class="match-row">
-          <input class="inp team-inp" value="${m.home}" onchange="updateMatchInfo(${m.id},'home',this.value)">
-          <input type="number" class="inp score" value="${m.scoreH}" onchange="updateMatchInfo(${m.id},'scoreH',this.value)">
-          <span class="vs">×</span>
-          <input type="number" class="inp score" value="${m.scoreA}" onchange="updateMatchInfo(${m.id},'scoreA',this.value)">
-          <input class="inp team-inp right" value="${m.away}" onchange="updateMatchInfo(${m.id},'away',this.value)">
-        </div>
-      </div>`;
-    });
-    html += `</div>`;
+
+  state.matches.forEach(m=>{
+
+    if(!byDate[m.date]){
+      byDate[m.date] = [];
+    }
+
+    byDate[m.date].push(m);
+
   });
-  container.innerHTML = html || '<p style="color:#5a6080;padding:1rem 0">Gere os jogos na aba Grupos.</p>';
+
+  let html = '';
+
+  Object.keys(byDate).forEach(d=>{
+
+    const isSwiss = Number(d)>=4;
+
+    html += `
+    <div class="date-sec">
+
+      <div class="date-hdr">
+
+        <span class="date-badge">
+          ${isSwiss ? `FASE SUÍÇA - DATA ${d}` : `DATA ${d}`}
+        </span>
+
+      </div>
+    `;
+
+    byDate[d].forEach(m=>{
+
+      html += `
+      <div class="match-card">
+
+        <div class="match-hdr">
+
+          <span class="match-lbl">
+            ${m.phase === 'swiss' ? 'Fase Suíça' : `Grupo ${m.group}`}
+          </span>
+
+          <input
+            class="inp time-inp"
+            value="${m.time}"
+            onchange="updateMatchInfo(${m.id},'time',this.value)">
+
+        </div>
+
+        <div class="match-row">
+
+          <input
+            class="inp team-inp"
+            value="${m.home}"
+            onchange="updateMatchInfo(${m.id},'home',this.value)">
+
+          <input
+            type="number"
+            class="inp score"
+            value="${m.scoreH}"
+            onchange="updateMatchInfo(${m.id},'scoreH',this.value)">
+
+          <span class="vs">×</span>
+
+          <input
+            type="number"
+            class="inp score"
+            value="${m.scoreA}"
+            onchange="updateMatchInfo(${m.id},'scoreA',this.value)">
+
+          <input
+            class="inp team-inp right"
+            value="${m.away}"
+            onchange="updateMatchInfo(${m.id},'away',this.value)">
+
+        </div>
+
+      </div>
+      `;
+
+    });
+
+    html += `</div>`;
+
+  });
+
+  container.innerHTML = html;
 }
 
-function updateMatchInfo(id, field, val) {
-  const m = state.matches.find(x => x.id === id);
-  if (m) { 
-      m[field] = val; 
-      if (field !== 'time') renderStandings(); 
+function updateMatchInfo(id,field,val){
+
+  const m = state.matches.find(x=>x.id===id);
+
+  if(m){
+
+    m[field] = val;
+
+    renderStandings();
+
   }
 }
 
-function getStandings() {
+function getStandings(){
+
   const stats = {};
-  ['A','B','C'].forEach(g => state.teams[g].forEach(t => stats[t] = { team: t, group: g, p: 0, j: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0 }));
-  state.matches.forEach(m => {
-    if (m.scoreH !== '' && m.scoreA !== '' && stats[m.home] && stats[m.away]) {
-      const h = stats[m.home], a = stats[m.away], sh = parseInt(m.scoreH), sa = parseInt(m.scoreA);
-      h.j++; a.j++; h.gp += sh; h.gc += sa; a.gp += sa; a.gc += sh; h.sg += (sh - sa); a.sg += (sa - sh);
-      if (sh > sa) { h.p += 3; h.v++; a.d++; }
-      else if (sa > sh) { a.p += 3; a.v++; h.d++; }
-      else { h.p += 1; a.p += 1; h.e++; a.e++; }
-    }
+
+  ['A','B','C'].forEach(g=>{
+
+    state.teams[g].forEach(t=>{
+
+      stats[t] = {
+        team:t,
+        group:g,
+        p:0,
+        j:0,
+        v:0,
+        e:0,
+        d:0,
+        gp:0,
+        gc:0,
+        sg:0
+      };
+
+    });
+
   });
+
+  state.matches.forEach(m=>{
+
+    if(
+      m.scoreH !== '' &&
+      m.scoreA !== '' &&
+      stats[m.home] &&
+      stats[m.away]
+    ){
+
+      const h = stats[m.home];
+      const a = stats[m.away];
+
+      const sh = parseInt(m.scoreH);
+      const sa = parseInt(m.scoreA);
+
+      h.j++;
+      a.j++;
+
+      h.gp += sh;
+      h.gc += sa;
+
+      a.gp += sa;
+      a.gc += sh;
+
+      h.sg += sh-sa;
+      a.sg += sa-sh;
+
+      if(sh>sa){
+
+        h.p += 3;
+        h.v++;
+        a.d++;
+
+      }else if(sa>sh){
+
+        a.p += 3;
+        a.v++;
+        h.d++;
+
+      }else{
+
+        h.p++;
+        a.p++;
+
+        h.e++;
+        a.e++;
+
+      }
+
+    }
+
+  });
+
   return Object.values(stats);
 }
 
-function getClassifiedTeams() {
+function getClassifiedTeams(){
+
   const st = getStandings();
-  const firsts = [], seconds = [];
-  ['A','B','C'].forEach(g => {
-    const rows = st.filter(r => r.group === g).sort((a, b) => b.p - a.p || b.sg - a.sg);
-    if (rows[0]) firsts.push(rows[0]);
-    if (rows[1]) seconds.push(rows[1]);
+
+  const firsts = [];
+  const seconds = [];
+
+  ['A','B','C'].forEach(g=>{
+
+    const rows = st
+    .filter(r=>r.group===g)
+    .sort((a,b)=>
+      b.p-a.p ||
+      b.sg-a.sg ||
+      b.gp-a.gp
+    );
+
+    if(rows[0]) firsts.push(rows[0]);
+    if(rows[1]) seconds.push(rows[1]);
+
   });
-  firsts.sort((a, b) => b.p - a.p || b.sg - a.sg);
-  seconds.sort((a, b) => b.p - a.p || b.sg - a.sg);
-  return { firsts, bestSecond: seconds[0] };
+
+  seconds.sort((a,b)=>
+    b.p-a.p ||
+    b.sg-a.sg ||
+    b.gp-a.gp
+  );
+
+  return {
+    firsts,
+    bestSecond:seconds[0]
+  };
 }
 
-function renderStandings() {
+function renderStandings(){
+
   const st = getStandings();
+  const classified = getClassifiedTeams();
+
   let html = '';
-  ['A','B','C'].forEach(g => {
-    const rows = st.filter(r => r.group === g).sort((a, b) => b.p - a.p || b.sg - a.sg);
-    html += `<div class="card"><div class="group-lbl">Grupo ${g}</div>
+
+  ['A','B','C'].forEach(g=>{
+
+    const rows = st
+    .filter(r=>r.group===g)
+    .sort((a,b)=>
+      b.p-a.p ||
+      b.sg-a.sg ||
+      b.gp-a.gp
+    );
+
+    html += `
+    <div class="card">
+
+      <div class="group-lbl">
+        Grupo ${g}
+      </div>
+
       <table>
-        <tr><th>Time</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>SG</th></tr>
-        ${rows.map(r => `<tr><td><strong>${r.team}</strong></td><td>${r.p}</td><td>${r.j}</td><td>${r.v}</td><td>${r.e}</td><td>${r.d}</td><td>${r.sg}</td></tr>`).join('')}
-      </table></div>`;
+
+        <tr>
+          <th>Time</th>
+          <th>P</th>
+          <th>J</th>
+          <th>V</th>
+          <th>E</th>
+          <th>D</th>
+          <th>GP</th>
+          <th>GC</th>
+          <th>SG</th>
+        </tr>
+    `;
+
+    rows.forEach((r,idx)=>{
+
+      let badge = '';
+
+      if(idx===0){
+        badge += ' 🥇';
+      }
+
+      if(
+        classified.bestSecond &&
+        r.team === classified.bestSecond.team
+      ){
+        badge += ' ⭐';
+      }
+
+      html += `
+      <tr>
+
+        <td>
+          <strong>${r.team}${badge}</strong>
+        </td>
+
+        <td>${r.p}</td>
+        <td>${r.j}</td>
+        <td>${r.v}</td>
+        <td>${r.e}</td>
+        <td>${r.d}</td>
+        <td>${r.gp}</td>
+        <td>${r.gc}</td>
+        <td>${r.sg}</td>
+
+      </tr>
+      `;
+
+    });
+
+    html += `
+      </table>
+
+      <div style="margin-top:10px;font-size:12px;color:#8890b0">
+        🥇 Líder do grupo &nbsp;&nbsp;&nbsp; ⭐ Melhor 2º colocado
+      </div>
+
+    </div>
+    `;
+
   });
+
   document.getElementById('standings-container').innerHTML = html;
 }
 
-function renderMata() {
+function renderMata(){
+
   const ko = state.knockout;
-  const matchBlock = (key, title, labelClass = '') => `
+
+  const matchBlock = (key,title,labelClass='') => `
+
     <div class="ko-card-full">
-      <div class="ko-lbl ${labelClass}">${title}</div>
+
+      <div class="ko-lbl ${labelClass}">
+        ${title}
+      </div>
+
       <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-        <span style="font-size:11px;color:#5a6080">Data/Hora</span>
-        <input class="inp time-inp" value="${ko[key].time}" onchange="state.knockout['${key}'].time=this.value">
+
+        <span style="font-size:11px;color:#5a6080">
+          Data/Hora
+        </span>
+
+        <input
+          class="inp time-inp"
+          value="${ko[key].time}"
+          onchange="state.knockout['${key}'].time=this.value">
+
       </div>
+
       <div class="match-row">
-        <input class="inp team-inp" value="${ko[key].home}" onchange="state.knockout['${key}'].home=this.value">
-        <input type="number" class="inp score" value="${ko[key].scoreH}" onchange="state.knockout['${key}'].scoreH=this.value">
+
+        <input
+          class="inp team-inp"
+          value="${ko[key].home}"
+          onchange="state.knockout['${key}'].home=this.value">
+
+        <input
+          type="number"
+          class="inp score"
+          value="${ko[key].scoreH}"
+          onchange="state.knockout['${key}'].scoreH=this.value">
+
         <span class="vs">×</span>
-        <input type="number" class="inp score" value="${ko[key].scoreA}" onchange="state.knockout['${key}'].scoreA=this.value">
-        <input class="inp team-inp right" value="${ko[key].away}" onchange="state.knockout['${key}'].away=this.value">
+
+        <input
+          type="number"
+          class="inp score"
+          value="${ko[key].scoreA}"
+          onchange="state.knockout['${key}'].scoreA=this.value">
+
+        <input
+          class="inp team-inp right"
+          value="${ko[key].away}"
+          onchange="state.knockout['${key}'].away=this.value">
+
       </div>
-    </div>`;
+
+    </div>
+  `;
 
   document.getElementById('mata-container').innerHTML = `
+
     <div class="ko-date-block">
-      <div class="ko-date-hdr"><span class="ko-badge">SEMIFINAIS</span></div>
-      <div class="ko-grid">
-        ${matchBlock('sf1', 'Semifinal 1')}
-        ${matchBlock('sf2', 'Semifinal 2')}
+
+      <div class="ko-date-hdr">
+        <span class="ko-badge">SEMIFINAIS</span>
       </div>
+
+      <div class="ko-grid">
+
+        ${matchBlock('sf1','Semifinal 1')}
+        ${matchBlock('sf2','Semifinal 2')}
+
+      </div>
+
     </div>
+
     <div class="ko-date-block">
-      <div class="ko-date-hdr"><span class="ko-badge" style="background:#2b1e0c;color:#ba8a3d">DECISÕES</span></div>
-      ${matchBlock('third', '3º Lugar', 'third')}
-      ${matchBlock('final', 'Final')}
-    </div>`;
+
+      <div class="ko-date-hdr">
+        <span class="ko-badge" style="background:#2b1e0c;color:#ba8a3d">
+          DECISÕES
+        </span>
+      </div>
+
+      ${matchBlock('third','3º Lugar','third')}
+      ${matchBlock('final','Final')}
+
+    </div>
+
+  `;
 }
 
-function renderArtilharia() {
-  state.scorers.sort((a, b) => b.goals - a.goals);
-  let html = `<div class="card"><div class="group-lbl">Artilharia</div>`;
-  state.scorers.forEach((s, i) => {
-    html += `<div class="scorer-row">
-      <input class="inp" value="${s.name}" onchange="state.scorers[${i}].name=this.value" placeholder="Jogador">
-      <input class="inp" value="${s.team}" onchange="state.scorers[${i}].team=this.value" placeholder="Time">
-      <input type="number" class="inp score" value="${s.goals}" onchange="state.scorers[${i}].goals=parseInt(this.value)">
-      <button class="del-btn" onclick="state.scorers.splice(${i},1);renderArtilharia()">✕</button>
-    </div>`;
+function renderArtilharia(){
+
+  state.scorers.sort((a,b)=>b.goals-a.goals);
+
+  let html = `
+  <div class="card">
+
+    <div class="group-lbl">
+      Artilharia
+    </div>
+  `;
+
+  state.scorers.forEach((s,i)=>{
+
+    html += `
+    <div class="scorer-row">
+
+      <input
+        class="inp"
+        value="${s.name}"
+        onchange="state.scorers[${i}].name=this.value"
+        placeholder="Jogador">
+
+      <input
+        class="inp"
+        value="${s.team}"
+        onchange="state.scorers[${i}].team=this.value"
+        placeholder="Time">
+
+      <input
+        type="number"
+        class="inp score"
+        value="${s.goals}"
+        onchange="state.scorers[${i}].goals=parseInt(this.value)">
+
+      <button
+        class="del-btn"
+        onclick="state.scorers.splice(${i},1);renderArtilharia()">
+
+        ✕
+
+      </button>
+
+    </div>
+    `;
+
   });
-  html += `<button class="btn" onclick="state.scorers.push({name:'',team:'',goals:0});renderArtilharia()">+ Jogador</button></div>`;
+
+  html += `
+    <button
+      class="btn"
+      onclick="state.scorers.push({name:'',team:'',goals:0});renderArtilharia()">
+
+      + Jogador
+
+    </button>
+
+  </div>
+  `;
+
   document.getElementById('artilharia-container').innerHTML = html;
 }
 
-function showTab(t) {
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-  const targetTab = document.querySelector(`[onclick="showTab('${t}')"]`);
-  if(targetTab) targetTab.classList.add('active');
-  document.getElementById(`tab-${t}`).classList.add('active');
+function showTab(t){
+
+  document.querySelectorAll('.tab')
+    .forEach(el=>el.classList.remove('active'));
+
+  document.querySelectorAll('.section')
+    .forEach(el=>el.classList.remove('active'));
+
+  document.querySelector(`[onclick="showTab('${t}')"]`)
+    .classList.add('active');
+
+  document.getElementById(`tab-${t}`)
+    .classList.add('active');
+
   renderAll();
 }
 
-function renderAll() {
-  renderGroupSetup(); renderMatches(); renderStandings(); renderMata(); renderArtilharia();
+function renderAll(){
+
+  renderGroupSetup();
+  renderMatches();
+  renderStandings();
+  renderMata();
+  renderArtilharia();
+
 }
 
 loadFromCloud();
+
 </script>
+
 </body>
 </html>
