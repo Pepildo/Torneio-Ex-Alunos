@@ -417,6 +417,10 @@
         Gerar Tabela de Jogos
       </button>
 
+      <button class="btn" onclick="reshuffleGroupMatches()">
+        Resortear Jogos
+      </button>
+
       <button class="btn" onclick="randomizeAll()">
         Sortear Times
       </button>
@@ -599,6 +603,69 @@ function randomizeAll(){
   });
 
   renderGroupSetup();
+}
+
+function reshuffleGroupMatches(){
+
+  // pega só os jogos da fase de grupos
+  const groupMatches = state.matches.filter(m => m.phase === 'groups');
+
+  if(groupMatches.length === 0){
+    alert('Primeiro gere os jogos.');
+    return;
+  }
+
+  // limpa jogos antigos das datas 1,2,3
+  state.matches = state.matches.filter(m => m.phase !== 'groups');
+
+  let id = 0;
+
+  // pega maior id existente
+  state.matches.forEach(m=>{
+    if(m.id >= id){
+      id = m.id + 1;
+    }
+  });
+
+  ['A','B','C'].forEach(group => {
+
+    const teams = [...state.teams[group]];
+
+    // todos confrontos possíveis do grupo
+    const matches = [
+      [teams[0], teams[1]],
+      [teams[0], teams[2]],
+      [teams[1], teams[2]]
+    ];
+
+    // embaralha ordem dos confrontos
+    matches.sort(()=>Math.random()-0.5);
+
+    // distribui nas datas 1,2,3
+    matches.forEach((match, index)=>{
+
+      state.matches.push({
+        id:id++,
+        date:index + 1,
+        phase:'groups',
+        group:group,
+        home:match[0],
+        away:match[1],
+        scoreH:'',
+        scoreA:'',
+        time:'Data/Hora'
+      });
+
+    });
+
+  });
+
+  // ordena por data
+  state.matches.sort((a,b)=>a.date-b.date);
+
+  renderAll();
+
+  alert('Jogos resortados!');
 }
 
 function saveGroups(){
